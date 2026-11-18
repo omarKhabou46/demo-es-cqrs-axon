@@ -1,8 +1,12 @@
 package com.enset.escqrs.commands.aggregate;
 
 import com.enset.escqrs.commands.commands.AddAccountCommand;
+import com.enset.escqrs.commands.commands.CreditAccountCommand;
+import com.enset.escqrs.commands.commands.UpdateStatusCommand;
 import com.enset.escqrs.enumirations.AccountStatus;
 import com.enset.escqrs.events.AddAccountEvent;
+import com.enset.escqrs.events.CreditAccountEvent;
+import com.enset.escqrs.events.UpdateStatusEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -42,4 +46,40 @@ public class AccountAggregate {
         this.currency = addAccountEvent.getCurrency();
         this.status = addAccountEvent.getStatus();
     }
+
+    @CommandHandler
+    public void creditHanlder(CreditAccountCommand creditAccountCommand) {
+        if (!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("the account must be active");
+        if (creditAccountCommand.getAmount() <= 0) throw new IllegalArgumentException("amount must be positive");
+        AggregateLifecycle.apply(new CreditAccountEvent(
+                creditAccountCommand.getAccountId(),
+                creditAccountCommand.getAmount(),
+                creditAccountCommand.getCurrency()
+        ));
+    }
+
+    @EventSourcingHandler
+    public void on(CreditAccountEvent creditAccountEvent) {
+        accountId = creditAccountEvent.getAccountId();
+        balance += creditAccountEvent.getAmount();
+        currency = creditAccountEvent.getCurrency();
+    }
+
+
+    @CommandHandler
+    public void handleChangeStatus(UpdateStatusCommand updateStatusCommand) {
+        AggregateLifecycle.apply(new UpdateStatusEvent(
+                updateStatusCommand.getAccountId(),
+                updateStatusCommand.getStatus()
+        ));
+    }
+
+
+    @EventSourcingHandler
+    public void on(UpdateStatusEvent updateStatusEvent) {
+        accountId = updateStatusEvent.getAccountId();
+        status = updateStatusEvent.getStatus();
+    }
+
+
 }
