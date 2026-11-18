@@ -47,6 +47,7 @@ public class AccountAggregate {
         this.balance = addAccountEvent.getBalance();
         this.currency = addAccountEvent.getCurrency();
         this.status = addAccountEvent.getStatus();
+        System.out.println("account Id : " +  accountId + " currency : " + currency + " blance : " + balance + " stutus : " + status);
     }
 
     @CommandHandler
@@ -65,6 +66,8 @@ public class AccountAggregate {
         accountId = creditAccountEvent.getAccountId();
         balance += creditAccountEvent.getAmount();
         currency = creditAccountEvent.getCurrency();
+        System.out.println("account Id : " +  accountId + "currency : " + currency + " blance : " + balance + " stutus " + status);
+
     }
 
 
@@ -84,6 +87,7 @@ public class AccountAggregate {
 
     @CommandHandler
     public void handleDebit(DebitAccountCommand debitAccountCommand) {
+        log.info("################# debit command #################");
         if (!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("the account must be active");
         if (balance < debitAccountCommand.getAmount()) throw new RuntimeException("your solde is insufficient");
         AggregateLifecycle.apply(new DebitAccountEvent(
@@ -98,6 +102,7 @@ public class AccountAggregate {
         accountId = debitAccountEvent.getAccountId();
         currency = debitAccountEvent.getCurrency();
         balance -= debitAccountEvent.getAmount();
+        System.out.println("account Id : " +  accountId + "currency : " + currency + " blance : " + balance + " stutus " + status);
     }
 
 
