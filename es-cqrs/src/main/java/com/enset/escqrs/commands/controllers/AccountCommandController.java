@@ -2,9 +2,11 @@ package com.enset.escqrs.commands.controllers;
 
 import com.enset.escqrs.commands.commands.AddAccountCommand;
 import com.enset.escqrs.commands.commands.CreditAccountCommand;
+import com.enset.escqrs.commands.commands.DebitAccountCommand;
 import com.enset.escqrs.commands.commands.UpdateStatusCommand;
 import com.enset.escqrs.commands.dtos.AddNewAccountRequestDTO;
 import com.enset.escqrs.commands.dtos.CreditAccountDTO;
+import com.enset.escqrs.commands.dtos.DebitAccountDTO;
 import com.enset.escqrs.commands.dtos.UpdateAccountDTO;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -50,6 +52,16 @@ public class AccountCommandController {
               updateAccountDTO.accountId(), updateAccountDTO.status()
         ));
 
+        return result;
+    }
+
+    @PostMapping("/debit")
+    public CompletableFuture<String> debiterAccount(@RequestBody DebitAccountDTO debitAccountDTO) {
+        CompletableFuture<String> result = commandGateway.send(new DebitAccountCommand(
+                debitAccountDTO.accountId(),
+                debitAccountDTO.amount(),
+                debitAccountDTO.currency()
+        ));
         return result;
     }
 

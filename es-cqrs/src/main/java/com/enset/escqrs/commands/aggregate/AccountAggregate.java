@@ -2,10 +2,12 @@ package com.enset.escqrs.commands.aggregate;
 
 import com.enset.escqrs.commands.commands.AddAccountCommand;
 import com.enset.escqrs.commands.commands.CreditAccountCommand;
+import com.enset.escqrs.commands.commands.DebitAccountCommand;
 import com.enset.escqrs.commands.commands.UpdateStatusCommand;
 import com.enset.escqrs.enumirations.AccountStatus;
 import com.enset.escqrs.events.AddAccountEvent;
 import com.enset.escqrs.events.CreditAccountEvent;
+import com.enset.escqrs.events.DebitAccountEvent;
 import com.enset.escqrs.events.UpdateStatusEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -74,11 +76,28 @@ public class AccountAggregate {
         ));
     }
 
-
     @EventSourcingHandler
     public void on(UpdateStatusEvent updateStatusEvent) {
         accountId = updateStatusEvent.getAccountId();
         status = updateStatusEvent.getStatus();
+    }
+
+    @CommandHandler
+    public void handleDebit(DebitAccountCommand debitAccountCommand) {
+        if (!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("the account must be active");
+        if (balance < debitAccountCommand.getAmount()) throw new RuntimeException("your solde is insufficient");
+        AggregateLifecycle.apply(new DebitAccountEvent(
+                debitAccountCommand.getAccountId(),
+                debitAccountCommand.getAmount(),
+                debitAccountCommand.getCurrency()
+        ));
+    }
+
+    @EventSourcingHandler
+    public void on(DebitAccountEvent debitAccountEvent) {
+        accountId = debitAccountEvent.getAccountId();
+        currency = debitAccountEvent.getCurrency();
+        balance -= debitAccountEvent.getAmount();
     }
 
 
