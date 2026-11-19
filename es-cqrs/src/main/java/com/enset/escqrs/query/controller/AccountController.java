@@ -5,7 +5,6 @@ import com.enset.escqrs.query.entity.AccountOperation;
 import com.enset.escqrs.query.querys.GetAllAccountQuery;
 import com.enset.escqrs.query.querys.GetAllOperations;
 import lombok.RequiredArgsConstructor;
-import org.axonframework.messaging.responsetypes.ResponseType;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.web.bind.annotation.GetMapping;
