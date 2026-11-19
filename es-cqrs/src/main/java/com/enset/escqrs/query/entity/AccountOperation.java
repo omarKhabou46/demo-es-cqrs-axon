@@ -4,6 +4,7 @@ import com.enset.escqrs.enumirations.OperationType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity @Getter @Setter
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 public class AccountOperation {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate date;
+    private Instant date;
     private double amount;
     @Enumerated(value = EnumType.STRING)
     private OperationType type;
