@@ -1,4 +1,12 @@
 services:
+  axonserver:
+    image: 'axoniq/axonserver:latest'
+    container_name: axon
+    environment:
+      - 'AXONIQ_AXONSERVER_STANDALONE=TRUE'
+    ports:
+      - '8024:8024'
+      - '8124:8124'
   postgres:
     image: postgres:15
     container_name: postgres

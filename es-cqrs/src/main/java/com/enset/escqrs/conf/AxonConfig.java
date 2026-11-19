@@ -17,50 +17,50 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Configuration
+// @Configuration
 public class AxonConfig {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//    @Bean
+//    public EntityManagerProvider entityManagerProvider() {
+//        return () -> entityManager;
+//    }
 
-    @Bean
-    public EntityManagerProvider entityManagerProvider() {
-        return () -> entityManager;
-    }
+//    @Bean
+//    public TransactionManager axonTransactionManager(PlatformTransactionManager platformTransactionManager) {
+//        return new SpringTransactionManager(platformTransactionManager);
+//    }
 
-    @Bean
-    public TransactionManager axonTransactionManager(PlatformTransactionManager platformTransactionManager) {
-        return new SpringTransactionManager(platformTransactionManager);
-    }
+//    @Bean
+//    @Primary
+//    public Serializer serializer() {
+//        return JacksonSerializer.defaultSerializer();
+//    }
 
-    @Bean
-    @Primary
-    public Serializer serializer() {
-        return JacksonSerializer.defaultSerializer();
-    }
+//    @Bean
+//    public EventStorageEngine eventStorageEngine(
+//            EntityManagerProvider entityManagerProvider,
+//            TransactionManager transactionManager,
+//            Serializer serializer) {
+//
+//        return JpaEventStorageEngine.builder()
+//                .entityManagerProvider(entityManagerProvider)
+//                .transactionManager(transactionManager)
+//                .snapshotSerializer(serializer)
+//                .eventSerializer(serializer)
+//                .build();
+//    }
 
-    @Bean
-    public EventStorageEngine eventStorageEngine(
-            EntityManagerProvider entityManagerProvider,
-            TransactionManager transactionManager,
-            Serializer serializer) {
-
-        return JpaEventStorageEngine.builder()
-                .entityManagerProvider(entityManagerProvider)
-                .transactionManager(transactionManager)
-                .snapshotSerializer(serializer)
-                .eventSerializer(serializer)
-                .build();
-    }
-
-    @Bean
-    public TokenStore tokenStore(
-            EntityManagerProvider entityManagerProvider,
-            Serializer serializer) {
-
-        return JpaTokenStore.builder()
-                .entityManagerProvider(entityManagerProvider)
-                .serializer(serializer)
-                .build();
-    }
+//    @Bean
+//    public TokenStore tokenStore(
+//            EntityManagerProvider entityManagerProvider,
+//            Serializer serializer) {
+//
+//        return JpaTokenStore.builder()
+//                .entityManagerProvider(entityManagerProvider)
+//                .serializer(serializer)
+//                .build();
+//    }
 }
