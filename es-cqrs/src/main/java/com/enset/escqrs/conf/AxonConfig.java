@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.axonframework.common.jpa.EntityManagerProvider;
 import org.axonframework.common.transaction.TransactionManager;
+import org.axonframework.eventhandling.tokenstore.TokenStore;
+import org.axonframework.eventhandling.tokenstore.jpa.JpaTokenStore;
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.axonframework.eventsourcing.eventstore.jpa.JpaEventStorageEngine;
 import org.axonframework.serialization.Serializer;
@@ -48,6 +50,17 @@ public class AxonConfig {
                 .transactionManager(transactionManager)
                 .snapshotSerializer(serializer)
                 .eventSerializer(serializer)
+                .build();
+    }
+
+    @Bean
+    public TokenStore tokenStore(
+            EntityManagerProvider entityManagerProvider,
+            Serializer serializer) {
+
+        return JpaTokenStore.builder()
+                .entityManagerProvider(entityManagerProvider)
+                .serializer(serializer)
                 .build();
     }
 }
