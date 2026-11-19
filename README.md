@@ -311,40 +311,7 @@ L'application démarre sur le port **`8066`** :
     }
   ]
   ```
+axon server : 
+<img width="1856" height="1013" alt="image" src="https://github.com/user-attachments/assets/18a72682-2610-4a4c-8197-f37ba2544ebd" />
 
----
-
-## Scénario de Test Complet (cURL)
-
-```bash
-# 1. Créer un nouveau compte (retourne l'UUID du compte)
-ACCOUNT_ID=$(curl -s -X POST http://localhost:8066/commands/accounts/add \
-  -H "Content-Type: application/json" \
-  -d '{"initialBalance": 1500, "currency": "MAD"}')
-
-echo "Compte créé : $ACCOUNT_ID"
-
-# 2. Activer le compte (obligatoire avant tout crédit ou débit)
-curl -X PUT http://localhost:8066/commands/accounts/updateStatus \
-  -H "Content-Type: application/json" \
-  -d "{\"accountId\": \"$ACCOUNT_ID\", \"status\": \"ACTIVATED\"}"
-
-# 3. Créditer le compte de 500 MAD
-curl -X POST http://localhost:8066/commands/accounts/credit \
-  -H "Content-Type: application/json" \
-  -d "{\"accountId\": \"$ACCOUNT_ID\", \"amount\": 500, \"currency\": \"MAD\"}"
-
-# 4. Débiter le compte de 200 MAD
-curl -X POST http://localhost:8066/commands/accounts/debit \
-  -H "Content-Type: application/json" \
-  -d "{\"accountId\": \"$ACCOUNT_ID\", \"amount\": 200, \"currency\": \"MAD\"}"
-
-# 5. Lire l'historique des événements dans l'Event Store (Command Side)
-curl -s http://localhost:8066/commands/accounts/events/$ACCOUNT_ID | jq
-
-# 6. Consulter l'état projeté des comptes (Query Side - PostgreSQL)
-curl -s http://localhost:8066/query/accounts/all | jq
-
-# 7. Consulter les opérations de crédit/débit du compte (Query Side - PostgreSQL)
-curl -s http://localhost:8066/query/accounts/$ACCOUNT_ID/operations | jq
 ```
