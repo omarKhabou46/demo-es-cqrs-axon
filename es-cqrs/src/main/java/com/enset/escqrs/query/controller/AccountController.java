@@ -1,12 +1,15 @@
 package com.enset.escqrs.query.controller;
 
 import com.enset.escqrs.query.entity.Account;
+import com.enset.escqrs.query.entity.AccountOperation;
 import com.enset.escqrs.query.querys.GetAllAccountQuery;
+import com.enset.escqrs.query.querys.GetAllOperations;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.messaging.responsetypes.ResponseType;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +26,11 @@ public class AccountController {
     public CompletableFuture<List<Account>> getAllAccount() {
         CompletableFuture<List<Account>> response = queryGateway.query(new GetAllAccountQuery(), ResponseTypes.multipleInstancesOf(Account.class));
         return response;
+    }
+
+    @GetMapping("/{accountId}/operations")
+    public CompletableFuture<List<AccountOperation>> getAllOperationsByAccountId(@PathVariable String accountId) {
+        CompletableFuture<List<AccountOperation>> result = queryGateway.query(new GetAllOperations(accountId), ResponseTypes.multipleInstancesOf(AccountOperation.class));
+        return result;
     }
 }
